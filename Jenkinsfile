@@ -9,12 +9,14 @@
             }
             stage('Code Quality Check via SonarQube') {
                 steps {
-                    def scannerHome = tool 'sonarqube-scanner';
-                    withSonarQubeEnv("sonarqube-container") {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dproject.settings=./sonar-project.properties
-                        """
+                    script {
+                        def scannerHome = tool 'sonarqube-scanner';
+                        withSonarQubeEnv("sonarqube-container") {
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dproject.settings=./sonar-project.properties
+                            """
+                        }
                     }
                 }
             }
