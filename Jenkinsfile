@@ -9,7 +9,7 @@
             }
             stage('Code Quality Check via SonarQube') {
                 steps {
-                def scannerHome = tool 'sonarqube-scanner';
+                    def scannerHome = tool 'sonarqube-scanner';
                     withSonarQubeEnv("sonarqube-container") {
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
