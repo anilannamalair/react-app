@@ -1,24 +1,65 @@
-  pipeline {
-        agent any
-        stages {
-            stage('Pull code from github') {
-                steps {
-                    git branch: 'master',
-                    url: 'https://github.com/kadumuri1994/react-kafka-integration.git'
-                }
+@Library('my-shared-library') _  // Import the shared library
+
+pipeline {
+    agent any  // You can specify the agent based on your requirements
+
+    environment {
+        MY_ENV_VAR = 'value'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm  // Checkout the source code
             }
-            stage('Code Quality Check via SonarQube') {
-                steps {
-                    script {
-                        def scannerHome = tool 'sonarqube-scanner';
-                        withSonarQubeEnv("sonarqube-container") {
-                            sh """
-                                ${scannerHome}/bin/sonar-scanner \
-                                -Dproject.settings=sonar-project.properties
-                            """
-                        }
-                    }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Using shared library function to install dependencies
+                    installDependencies()
                 }
             }
         }
-  } 
+
+        stage('Build') {
+            steps {
+                script {
+                    // Using shared library function to build the project
+                    buildProject()
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // Using shared library function to run tests
+                    runTests()
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Using shared library function to deploy the project
+                    deployProject()
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished!'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
